@@ -7,8 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func main() {
-
+func MessagesHandler() {
 	//Create bot
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
@@ -42,4 +41,12 @@ func main() {
 			bot.Send(msg)
 		}
 	}
+}
+
+func main() {
+	err := CreateTables()
+	if err != nil {
+		panic(err)
+	}
+	MessagesHandler()
 }

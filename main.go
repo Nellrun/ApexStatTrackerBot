@@ -24,7 +24,7 @@ func MessagesHandler() {
 	//Get updates from bot
 	updates, _ := bot.GetUpdatesChan(u)
 	for update := range updates {
-		if update.Message == nil {
+		if update.Message == nil || !strings.HasPrefix(update.Message.Text, "/") {
 			continue
 		}
 

@@ -5,7 +5,9 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	tracker "github.com/heroku/go-apex-tracker/apex-tracker"
 )
 
 func MessagesHandler() {
@@ -32,11 +34,18 @@ func MessagesHandler() {
 			case update.Message.Text == "/chat_id":
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, strconv.FormatInt(update.Message.Chat.ID, 10))
 				bot.Send(msg)
-			case strings.HasPrefix(update.Message.Text, "/subscribe"):
-				args := strings.SplitAfter(update.Message.Text, "/subscribe")[1]
-				clear_args := strings.TrimSpace(args)
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, clear_args)
-				bot.Send(msg)
+			case strings.HasPrefix(update.Message.Text, "/rank"):
+				username := strings.SplitAfter(update.Message.Text, "/rank")[1]
+				clearUsername := strings.TrimSpace(username)
+
+				stats, err := tracker.GetStats(clearUsername, "psn")
+				if err != nil {
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong, please try later")
+					bot.Send(msg)
+				} else {
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, stats.RankScore.DisplayValue)
+					bot.Send(msg)
+				}
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello")
 				bot.Send(msg)

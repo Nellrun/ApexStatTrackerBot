@@ -29,13 +29,16 @@ func main() {
 		//Check if message from user is text
 		if reflect.TypeOf(update.Message.Text).Kind() == reflect.String && update.Message.Text != "" {
 			switch update.Message.Text {
+			case "/chat_id":
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Chat.ID)
+				bot.Send(msg)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello")
 				bot.Send(msg)
 			}
 		} else {
 			//Send message
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don undestand you")
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
 			bot.Send(msg)
 		}
 	}

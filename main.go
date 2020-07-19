@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"strconv"
@@ -10,7 +11,11 @@ import (
 	tracker "github.com/heroku/go-apex-tracker/apex-tracker"
 )
 
-func MessagesHandler() {
+func formatUserInfo(stats tracker.Stats) string {
+	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, stats.RankScore.DisplayValue)
+}
+
+func messagesHandler() {
 	//Create bot
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
@@ -43,7 +48,7 @@ func MessagesHandler() {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong, please try later")
 					bot.Send(msg)
 				} else {
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, segments[0].Stats.RankScore.DisplayValue)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, formatUserInfo(segments[0].Stats))
 					bot.Send(msg)
 				}
 			default:
@@ -63,5 +68,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	MessagesHandler()
+	messagesHandler()
 }

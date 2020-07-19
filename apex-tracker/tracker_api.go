@@ -29,6 +29,7 @@ type Segment struct {
 type Stats struct {
 	RankScore Stat `json:"rankScore"`
 	Kills     Stat `json:"kills"`
+	Damage    Stat `json:"damage"`
 }
 
 // Stat describe ranked league score

@@ -33,8 +33,9 @@ func MessagesHandler() {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, strconv.FormatInt(update.Message.Chat.ID, 10))
 				bot.Send(msg)
 			case strings.HasPrefix(update.Message.Text, "/subscribe"):
-				args := strings.SplitAfter(update.Message.Text, "/subscribe")[0]
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, args)
+				args := strings.SplitAfter(update.Message.Text, "/subscribe")[1]
+				clear_args = strings.TrimSpace(args)
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, clear_args)
 				bot.Send(msg)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello")

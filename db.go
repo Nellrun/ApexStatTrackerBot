@@ -14,7 +14,7 @@ func Subscribe(username string, chatId int64) error {
 	}
 	defer db.Close()
 
-	query := `INSERT INTO subscriptions (username, chat_id) VALUES ($1, $2);`
+	query := `INSERT INTO subscriptions (username, chat_id) VALUES ($1, $2) ON CONFLICT DO NOTHING;`
 
 
 	_, err = db.Exec(query, username, chatId)
@@ -34,6 +34,11 @@ func CreateTables() error {
 	defer db.Close()
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS subscriptions (id SERIAL PRIMARY KEY, username TEXT, platform TEXT DEFAULT 'psn', chat_id INT);`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS s_username ON subscriptions (username, chat_id);`)
 	if err != nil {
 		return err
 	}

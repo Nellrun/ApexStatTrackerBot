@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 	"reflect"
-
+	"strconv"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -30,7 +30,7 @@ func main() {
 		if reflect.TypeOf(update.Message.Text).Kind() == reflect.String && update.Message.Text != "" {
 			switch update.Message.Text {
 			case "/chat_id":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Chat.ID)
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, strconv.FormatInt(update.Message.Chat.ID, 10))
 				bot.Send(msg)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello")

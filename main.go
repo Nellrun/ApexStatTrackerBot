@@ -38,16 +38,16 @@ func MessagesHandler() {
 				username := strings.SplitAfter(update.Message.Text, "/rank")[1]
 				clearUsername := strings.TrimSpace(username)
 
-				stats, err := tracker.GetStats(clearUsername, "psn")
+				segments, err := tracker.GetStats(clearUsername, "psn")
 				if err != nil {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong, please try later")
 					bot.Send(msg)
 				} else {
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, stats.RankScore.DisplayValue)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, segments[0].Stats.RankScore.DisplayValue)
 					bot.Send(msg)
 				}
 			default:
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Unknown command")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит это сообщения")
 				bot.Send(msg)
 			}
 		} else {

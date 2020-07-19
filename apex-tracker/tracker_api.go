@@ -37,7 +37,7 @@ type RankScore struct {
 }
 
 // GetStats getting user stats from tracker
-func GetStats(username string, platform string) (*Stats, error) {
+func GetStats(username string, platform string) ([]Segment, error) {
 	client := &http.Client{}
 
 	url := fmt.Sprintf("https://public-api.tracker.gg/v2/apex/standard/profile/%s/%s", platform, username)
@@ -72,5 +72,5 @@ func GetStats(username string, platform string) (*Stats, error) {
 		return nil, err
 	}
 
-	return &playserProfileResponse.Data.Segments[0].Stats, nil
+	return playserProfileResponse.Data.Segments, nil
 }

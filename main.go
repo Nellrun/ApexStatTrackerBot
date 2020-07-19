@@ -47,7 +47,7 @@ func MessagesHandler() {
 					bot.Send(msg)
 				}
 			default:
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит это сообщения")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит это сообщение")
 				bot.Send(msg)
 			}
 		} else {

@@ -39,7 +39,7 @@ func MessagesHandler() {
 				clearUsername := strings.TrimSpace(username)
 
 				segments, err := tracker.GetStats(clearUsername, "psn")
-				if err != nil {
+				if err != nil || len(segments) == 0 {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong, please try later")
 					bot.Send(msg)
 				} else {

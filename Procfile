@@ -1,1 +1,1 @@
-web: bin/go-apex-tracker
+worker: bin/go-apex-tracker

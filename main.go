@@ -47,7 +47,7 @@ func MessagesHandler() {
 					bot.Send(msg)
 				}
 			default:
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Unknown command")
 				bot.Send(msg)
 			}
 		} else {

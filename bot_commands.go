@@ -35,33 +35,14 @@ func ParseCommand(message string) Command {
 	return command
 }
 
+func formatUserInfo(stats tracker.Stats) string {
+	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, stats.RankScore.DisplayValue)
+}
+
 // ChatIDHandler handler for command chat_id
 func ChatIDHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	msg := tgbotapi.NewMessage(chatID, strconv.FormatInt(chatID, 10))
 	bot.Send(msg)
-}
-
-// RankHandler handler
-func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
-	if len(command.args) < 1 {
-		msg := tgbotapi.NewMessage(chatID, "you must provide username as argument")
-		bot.Send(msg)
-		return
-	}
-
-	username := command.args[0]
-	platform := "psn"
-	if len(command.args) >= 2 {
-		platform = command.args[1]
-	}
-	segments, err := tracker.GetStats(username, platform)
-	if err != nil || len(segments) == 0 {
-		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
-		bot.Send(msg)
-	} else {
-		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats))
-		bot.Send(msg)
-	}
 }
 
 // SubscribeHandler handler
@@ -104,6 +85,64 @@ func UnsubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 }
 
+// RankHandler handler
+func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 1 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide username as argument")
+		bot.Send(msg)
+		return
+	}
+
+	username := command.args[0]
+	platform := "psn"
+	if len(command.args) >= 2 {
+		platform = command.args[1]
+	}
+	segments, err := tracker.GetStats(username, platform)
+	if err != nil || len(segments) == 0 {
+		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		bot.Send(msg)
+	} else {
+		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats))
+		bot.Send(msg)
+	}
+}
+
+// StatsHandler handler
+func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 2 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide username and legend name as argument")
+		bot.Send(msg)
+		return
+	}
+
+	username := command.args[0]
+	legend := strings.ToLower(command.args[0])
+	platform := "psn"
+	if len(command.args) >= 3 {
+		platform = command.args[2]
+	}
+
+	segments, err := tracker.GetStats(username, platform)
+
+	if err != nil || len(segments) == 0 {
+		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		bot.Send(msg)
+		return
+	}
+
+	for _, segment := range segments {
+		if strings.ToLower(segment.Metadata.Name) == legend {
+			msg := tgbotapi.NewMessage(chatID, formatUserInfo(segment.Stats))
+			bot.Send(msg)
+			return
+		}
+	}
+
+	msg := tgbotapi.NewMessage(chatID, "legend not found")
+	bot.Send(msg)
+}
+
 // HelpHandler help command
 func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	helpMessage := `
@@ -111,6 +150,7 @@ func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	/help - вывести список доступных комманд
 	
 	/rank <username> [<platform>] - вывести статистику игрока: количество киллов, урона и очков рейтинга
+	/stats <username> <class> [<platform>] - вывести стату легенды
 
 	/subscribe <username> [<platform>] - добавить пользователя в список ежедневных рассылок статистики в данный чат
 	/unsubscribe <username> - удалить игрока из списка ежедневных рассылок статистики 

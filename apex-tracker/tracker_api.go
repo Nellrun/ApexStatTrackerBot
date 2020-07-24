@@ -21,8 +21,14 @@ type Data struct {
 
 // Segment describe one segment
 type Segment struct {
-	SegmentType string `json:"type"`
-	Stats       Stats  `json:"stats"`
+	SegmentType string   `json:"type"`
+	Metadata    Metadata `json:"metadata"`
+	Stats       Stats    `json:"stats"`
+}
+
+// Metadata meta
+type Metadata struct {
+	Name string `json:"name"`
 }
 
 // Stats one of player stats

@@ -1,18 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"reflect"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	tracker "github.com/heroku/go-apex-tracker/apex-tracker"
 )
-
-func formatUserInfo(stats tracker.Stats) string {
-	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, stats.RankScore.DisplayValue)
-}
 
 func messagesHandler() {
 	//Create bot
@@ -40,6 +34,8 @@ func messagesHandler() {
 				ChatIDHandler(bot, update.Message.Chat.ID, command)
 			case "rank":
 				RankHandler(bot, update.Message.Chat.ID, command)
+			case "stats":
+				StatsHandler(bot, update.Message.Chat.ID, command)
 			case "subscribe":
 				SubscribeHandler(bot, update.Message.Chat.ID, command)
 			case "unsubscribe":

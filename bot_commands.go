@@ -134,8 +134,8 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	for _, segment := range segments {
 		if strings.ToLower(segment.Metadata.Name) == legend {
 			msg := tgbotapi.NewPhotoUpload(chatID, nil)
-			msg.FileID = "AgACAgIAAxkBAAO-Xxtr7gHnY9QfAqy-VmYeRfrgf7oAAlexMRvH1dhIJnRJgYj0ZGReCiCVLgADAQADAgADbQADtvcBAAEaBA"
-			// msg.FileID = segment.Metadata.TallImageURL
+			// msg.FileID = "AgACAgIAAxkBAAO-Xxtr7gHnY9QfAqy-VmYeRfrgf7oAAlexMRvH1dhIJnRJgYj0ZGReCiCVLgADAQADAgADbQADtvcBAAEaBA"
+			msg.FileID = segment.Metadata.TallImageURL
 			msg.UseExisting = true
 			msg.Caption = formatUserInfo(segment.Stats)
 			bot.Send(msg)
@@ -164,5 +164,25 @@ func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	/chat_id - получить идентификатор чата
 	`
 	msg := tgbotapi.NewMessage(chatID, helpMessage)
+	bot.Send(msg)
+}
+
+// DeleteImageHandler handler
+func DeleteImageHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 1 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide imagetag as argument")
+		bot.Send(msg)
+		return
+	}
+
+	imageTag := command.args[0]
+	err := DeleteImage(imageTag)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		bot.Send(msg)
+		return
+	}
+
+	msg := tgbotapi.NewMessage(chatID, "image deleted")
 	bot.Send(msg)
 }

@@ -43,6 +43,64 @@ func Unsubscribe(username string, chatId int64) error {
 	return nil
 }
 
+// AddImage upload image
+func AddImage(imageTag string, image string) error {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	query := `INSERT INTO images (image_tag, image) VALUES ($1, $2) ON CONFLICT DO UPDATE SET image = $2;`
+
+	_, err = db.Exec(query, imageTag, image)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getImage(imageTag string) (*string, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	query := `SELECT image from images WHERE image_tag = $1;`
+
+	row := db.QueryRow(query, imageTag)
+
+	var image string
+
+	err = row.Scan(&image)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &image, nil
+}
+
+// DeleteImage delete row from images
+func DeleteImage(imageTag string) error {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	query := `DELETE FROM images WHERE image_tag = $1;`
+
+	_, err = db.Exec(query, imageTag)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // CreateTables Initialization
 func CreateTables() error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -52,6 +110,11 @@ func CreateTables() error {
 	defer db.Close()
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS subscriptions (id SERIAL PRIMARY KEY, username TEXT, platform TEXT DEFAULT 'psn', chat_id INT);`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS images (image_tag TEXT PRIMARY KEY, image TEXT);`)
 	if err != nil {
 		return err
 	}

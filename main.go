@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -24,8 +25,23 @@ func messagesHandler() {
 	for update := range updates {
 		if update.Message.Photo != nil {
 			imageURL := (*update.Message.Photo)[0].FileID
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, imageURL)
-			bot.Send(msg)
+			command := ParseCommand(update.Message.Caption)
+			if command.name == "uploadimage" {
+				if len(command.args) < 1 {
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "you must provide image tag")
+					bot.Send(msg)
+					continue
+				}
+				err := AddImage(command.args[0], imageURL)
+				if err != nil {
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong")
+					bot.Send(msg)
+					continue
+				}
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("image for tag %s updated", command.args[0]))
+				bot.Send(msg)
+				continue
+			}
 		}
 
 		if update.Message == nil || !strings.HasPrefix(update.Message.Text, "/") {
@@ -46,6 +62,8 @@ func messagesHandler() {
 				SubscribeHandler(bot, update.Message.Chat.ID, command)
 			case "unsubscribe":
 				UnsubscribeHandler(bot, update.Message.Chat.ID, command)
+			case "deleteimage":
+				DeleteImageHandler(bot, update.Message.Chat.ID, command)
 			case "help":
 				HelpHandler(bot, update.Message.Chat.ID, command)
 			default:

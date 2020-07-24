@@ -103,3 +103,22 @@ func UnsubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		bot.Send(msg)
 	}
 }
+
+// HelpHandler help command
+func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	helpMessage := `
+	Основные комманды:
+	/help - вывести список доступных комманд
+	
+	/rank <username> [<platform>] - вывести статистику игрока: количество киллов, урона и очков рейтинга
+
+	/subscribe <username> [<platform>] - добавить пользователя в список ежедневных рассылок статистики в данный чат
+	/unsubscribe <username> - удалить игрока из списка ежедневных рассылок статистики 
+
+
+	Дебаг комманды:
+	/chat_id - получить идентификатор чата
+	`
+	msg := tgbotapi.NewMessage(chatID, helpMessage)
+	bot.Send(msg)
+}

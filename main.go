@@ -44,6 +44,8 @@ func messagesHandler() {
 				SubscribeHandler(bot, update.Message.Chat.ID, command)
 			case "unsubscribe":
 				UnsubscribeHandler(bot, update.Message.Chat.ID, command)
+			case "help":
+				HelpHandler(bot, update.Message.Chat.ID, command)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит эта комманда")
 				bot.Send(msg)

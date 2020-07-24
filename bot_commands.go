@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -59,6 +60,46 @@ func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		bot.Send(msg)
 	} else {
 		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats))
+		bot.Send(msg)
+	}
+}
+
+// SubscribeHandler handler
+func SubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 1 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide username as argument")
+		bot.Send(msg)
+		return
+	}
+
+	username := command.args[0]
+	err := Subscribe(username, chatID)
+
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		bot.Send(msg)
+	} else {
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("user %s subscribed for this chat", username))
+		bot.Send(msg)
+	}
+}
+
+// UnsubscribeHandler handler
+func UnsubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 1 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide username as argument")
+		bot.Send(msg)
+		return
+	}
+
+	username := command.args[0]
+	err := Unsubscribe(username, chatID)
+
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		bot.Send(msg)
+	} else {
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("user %s unsubscribed for this chat", username))
 		bot.Send(msg)
 	}
 }

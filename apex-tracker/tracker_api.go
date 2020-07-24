@@ -28,7 +28,8 @@ type Segment struct {
 
 // Metadata meta
 type Metadata struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
+	ImageURL string `json:"imageUrl"`
 }
 
 // Stats one of player stats

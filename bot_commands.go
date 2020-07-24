@@ -117,7 +117,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 
 	username := command.args[0]
-	legend := strings.ToLower(command.args[0])
+	legend := strings.ToLower(command.args[1])
 	platform := "psn"
 	if len(command.args) >= 3 {
 		platform = command.args[2]

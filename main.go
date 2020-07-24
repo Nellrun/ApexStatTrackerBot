@@ -26,7 +26,6 @@ func messagesHandler() {
 			imageURL := (*update.Message.Photo)[0].FileID
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, imageURL)
 			bot.Send(msg)
-			return
 		}
 
 		if update.Message == nil || !strings.HasPrefix(update.Message.Text, "/") {

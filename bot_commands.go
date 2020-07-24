@@ -134,7 +134,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	for _, segment := range segments {
 		if strings.ToLower(segment.Metadata.Name) == legend {
 			msg := tgbotapi.NewPhotoUpload(chatID, nil)
-			msg.FileID = segment.Metadata.ImageURL
+			msg.FileID = segment.Metadata.TallImageURL
 			msg.UseExisting = true
 			msg.Caption = formatUserInfo(segment.Stats)
 			bot.Send(msg)

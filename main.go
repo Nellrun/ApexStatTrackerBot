@@ -24,7 +24,7 @@ func messagesHandler() {
 	for update := range updates {
 		if update.Message.Photo != nil {
 			imageURL := (*update.Message.Photo)[0].FileID
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, imageUrl)
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, imageURL)
 			bot.Send(msg)
 			return
 		}

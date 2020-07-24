@@ -51,7 +51,7 @@ func AddImage(imageTag string, image string) error {
 	}
 	defer db.Close()
 
-	query := `INSERT INTO images (image_tag, image) VALUES ($1, $2) ON CONFLICT DO UPDATE SET image = $2;`
+	query := `INSERT INTO images (image_tag, image) VALUES ($1, $2) ON CONFLICT (image_tag) DO UPDATE SET image = $2;`
 
 	_, err = db.Exec(query, imageTag, image)
 	if err != nil {

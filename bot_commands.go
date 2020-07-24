@@ -176,7 +176,7 @@ func DeleteImageHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 
 	imageTag := command.args[0]
-	err := DeleteImage(imageTag)
+	err := DeleteImage(strings.ToLower(imageTag))
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
 		bot.Send(msg)

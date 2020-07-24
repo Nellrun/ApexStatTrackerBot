@@ -32,7 +32,7 @@ func messagesHandler() {
 					bot.Send(msg)
 					continue
 				}
-				err := AddImage(command.args[0], imageURL)
+				err := AddImage(strings.ToLower(command.args[0]), imageURL)
 				if err != nil {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong")
 					bot.Send(msg)

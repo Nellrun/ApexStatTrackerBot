@@ -36,6 +36,7 @@ func messagesHandler() {
 				if err != nil {
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong")
 					bot.Send(msg)
+					panic(err)
 					continue
 				}
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, fmt.Sprintf("image for tag %s updated", command.args[0]))

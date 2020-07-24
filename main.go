@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -38,26 +37,14 @@ func messagesHandler() {
 			command := ParseCommand(update.Message.Text)
 			switch command.name {
 			case "chat_id":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, strconv.FormatInt(update.Message.Chat.ID, 10))
-				bot.Send(msg)
+				ChatIDHandler(bot, update.Message.Chat.ID, command)
 			case "/rank":
-				username := strings.SplitAfter(update.Message.Text, "/rank")[1]
-				clearUsername := strings.TrimSpace(username)
-
-				segments, err := tracker.GetStats(clearUsername, "psn")
-				if err != nil || len(segments) == 0 {
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong, please try later")
-					bot.Send(msg)
-				} else {
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, formatUserInfo(segments[0].Stats))
-					bot.Send(msg)
-				}
+				RankHandler(bot, update.Message.Chat.ID, command)
 			default:
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит это сообщение")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит эта комманда")
 				bot.Send(msg)
 			}
 		} else {
-			//Send message
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
 			bot.Send(msg)
 		}

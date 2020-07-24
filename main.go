@@ -38,7 +38,7 @@ func messagesHandler() {
 			switch command.name {
 			case "chat_id":
 				ChatIDHandler(bot, update.Message.Chat.ID, command)
-			case "/rank":
+			case "rank":
 				RankHandler(bot, update.Message.Chat.ID, command)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит эта комманда")

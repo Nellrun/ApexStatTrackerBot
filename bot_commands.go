@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 
@@ -133,7 +134,9 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 
 	for _, segment := range segments {
 		if strings.ToLower(segment.Metadata.Name) == legend {
-			msg := tgbotapi.NewPhotoUpload(chatID, segment.Metadata.ImageURL)
+			url_ptr, _ := url.Parse(segment.Metadata.ImageURL)
+			url := *url_ptr
+			msg := tgbotapi.NewPhotoUpload(chatID, url)
 			msg.Caption = formatUserInfo(segment.Stats)
 			bot.Send(msg)
 			return

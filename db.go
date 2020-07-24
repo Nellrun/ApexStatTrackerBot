@@ -1,11 +1,11 @@
-package main;
+package main
 
 import (
-	"os"
 	"database/sql"
-	_ "github.com/lib/pq"
- )
+	"os"
 
+	_ "github.com/lib/pq"
+)
 
 func Subscribe(username string, chatId int64) error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -16,15 +16,13 @@ func Subscribe(username string, chatId int64) error {
 
 	query := `INSERT INTO subscriptions (username, chat_id) VALUES ($1, $2) ON CONFLICT DO NOTHING;`
 
-
 	_, err = db.Exec(query, username, chatId)
 	if err != nil {
 		return err
 	}
 
-	return nil;
+	return nil
 }
-
 
 func CreateTables() error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -43,5 +41,5 @@ func CreateTables() error {
 		return err
 	}
 
-	return nil;
+	return nil
 }

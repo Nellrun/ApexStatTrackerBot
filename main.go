@@ -35,11 +35,12 @@ func messagesHandler() {
 
 		//Check if message from user is text
 		if reflect.TypeOf(update.Message.Text).Kind() == reflect.String && update.Message.Text != "" {
-			switch {
-			case update.Message.Text == "/chat_id":
+			command := ParseCommand(update.Message.Text)
+			switch command.name {
+			case "chat_id":
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, strconv.FormatInt(update.Message.Chat.ID, 10))
 				bot.Send(msg)
-			case strings.HasPrefix(update.Message.Text, "/rank"):
+			case "/rank":
 				username := strings.SplitAfter(update.Message.Text, "/rank")[1]
 				clearUsername := strings.TrimSpace(username)
 

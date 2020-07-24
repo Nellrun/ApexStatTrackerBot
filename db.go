@@ -33,7 +33,7 @@ func Unsubscribe(username string, chatId int64) error {
 	}
 	defer db.Close()
 
-	query := `DELETE FROM subscriptions WHERE username = $1 and chat_id = $1;`
+	query := `DELETE FROM subscriptions WHERE username = $1 and chat_id = $2;`
 
 	_, err = db.Exec(query, username, chatId)
 	if err != nil {

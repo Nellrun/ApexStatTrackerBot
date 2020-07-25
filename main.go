@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"reflect"
 	"strings"
@@ -22,7 +21,7 @@ func messagesHandler() {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	_, err = bot.SetWebhook(tgbotapi.NewWebhookWithCert("https://apex-stat-tracker-bot.herokuapp.com/"+bot.Token, "cert.pem"))
+	_, err = bot.SetWebhook(tgbotapi.NewWebhook("https://apex-stat-tracker-bot.herokuapp.com/" + bot.Token))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +33,7 @@ func messagesHandler() {
 		log.Printf("Telegram callback failed: %s", info.LastErrorMessage)
 	}
 	updates := bot.ListenForWebhook("/" + bot.Token)
-	go http.ListenAndServeTLS("0.0.0.0:80", "cert.pem", "key.pem", nil)
+	// go http.ListenAndServeTLS("0.0.0.0", "cert.pem", "key.pem", nil)
 
 	for update := range updates {
 

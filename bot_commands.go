@@ -63,6 +63,10 @@ func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, le
 		for _, newStat := range newStats[1:] {
 			oldStat := findLegend(oldStats, newStat.Metadata.Name)
 
+			if oldStat == nil {
+				continue
+			}
+
 			text += fmt.Sprintf(
 				"\n===%s===\nKills: %s\nDamage: %s\nRank RP: %s",
 				newStat.Metadata.Name,

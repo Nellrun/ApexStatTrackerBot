@@ -2,7 +2,9 @@ package postgresql
 
 import (
 	"database/sql"
+	"database/sql/driver"
 	"os"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -82,6 +84,53 @@ func GetImage(imageTag string) (*string, error) {
 	}
 
 	return image, nil
+}
+
+// GetSubscriptions func
+func GetSubscriptions() ([]string, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	query := `SELECT DISTINCT(username) from subscriptions LIMIT 30;`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []string
+	for rows.Next() {
+		username := new(string)
+		err := rows.Scan(&username)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, *username)
+	}
+
+	return result, nil
+}
+
+// AddLog insert into log
+func AddLog(username string, stats driver.Value, created time.Time) error {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	query := `INSERT INTO log (username, stats, created) VALUES ($1, $2, $3) ON CONFLICT (username, created) DO UPDATE SET stats = $2, updated = NOW();`
+
+	_, err = db.Exec(query, username, stats, created)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // DeleteImage delete row from images

@@ -65,7 +65,7 @@ func SubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		return
 	}
 
-	username := command.args[0]
+	username := strings.ToLower(command.args[0])
 	err := db.Subscribe(username, chatID)
 
 	if err != nil {
@@ -85,7 +85,7 @@ func UnsubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		return
 	}
 
-	username := command.args[0]
+	username := strings.ToLower(command.args[0])
 	err := db.Unsubscribe(username, chatID)
 
 	if err != nil {

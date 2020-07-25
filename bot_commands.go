@@ -40,11 +40,7 @@ func ParseCommand(message string) Command {
 
 func formatStatDiff(oldStat float64, newStat float64) string {
 	diff := newStat - oldStat
-	sign := "+"
-	if diff < 0 {
-		sign = "-"
-	}
-	return fmt.Sprintf("%f (%s%f)", newStat, sign, diff)
+	return fmt.Sprintf("%.0f (%+.0f)", newStat, diff)
 }
 
 func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, legend string) string {

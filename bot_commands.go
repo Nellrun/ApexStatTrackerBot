@@ -108,7 +108,7 @@ func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 
 	segments, err := tracker.GetStats(username, platform)
 	if err != nil || len(segments) == 0 {
-		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("user %s not found for platfrom %s", username, platform))
 		bot.Send(msg)
 	} else {
 		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats))
@@ -141,7 +141,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	segments, err := tracker.GetStats(username, platform)
 
 	if err != nil || len(segments) == 0 {
-		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("user %s not found for platfrom %s", username, platform))
 		bot.Send(msg)
 		return
 	}

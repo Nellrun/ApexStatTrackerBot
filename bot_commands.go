@@ -54,11 +54,24 @@ func findLegend(stats []tracker.Segment, legend string) *tracker.Segment {
 
 func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, legend string) string {
 	if legend == "" {
-		return fmt.Sprintf(
-			"Kills: %s\nDamage: %s\nRank RP: %s",
+		text := fmt.Sprintf(
+			"===Total===\nKills: %s\nDamage: %s\nRank RP: %s",
 			formatStatDiff(oldStats[0].Stats.Kills.Value, newStats[0].Stats.Kills.Value),
 			formatStatDiff(oldStats[0].Stats.Damage.Value, newStats[0].Stats.Damage.Value),
 			formatStatDiff(oldStats[0].Stats.RankScore.Value, newStats[0].Stats.RankScore.Value))
+
+		for _, newStat := range newStats[1:] {
+			oldStat := findLegend(oldStats, newStat.Metadata.Name)
+
+			text += fmt.Sprintf(
+				"\n===%s===\nKills: %s\nDamage: %s\nRank RP: %s",
+				newStat.Metadata.Name,
+				formatStatDiff(oldStat.Stats.Kills.Value, newStat.Stats.Kills.Value),
+				formatStatDiff(oldStat.Stats.Damage.Value, newStat.Stats.Damage.Value),
+				formatStatDiff(oldStat.Stats.RankScore.Value, newStat.Stats.RankScore.Value))
+		}
+
+		return text
 	}
 
 	oldLegend := findLegend(oldStats, legend)

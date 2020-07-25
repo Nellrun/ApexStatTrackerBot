@@ -45,7 +45,7 @@ func formatStatDiff(oldStat float64, newStat float64) string {
 
 func findLegend(stats []tracker.Segment, legend string) *tracker.Segment {
 	for _, segment := range stats {
-		if segment.Metadata.Name == legend {
+		if strings.ToLower(segment.Metadata.Name) == legend {
 			return &segment
 		}
 	}

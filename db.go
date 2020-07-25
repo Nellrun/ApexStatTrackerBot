@@ -72,7 +72,7 @@ func getImage(imageTag string) (*string, error) {
 
 	row := db.QueryRow(query, imageTag)
 
-	var image string
+	image := new(string)
 
 	err = row.Scan(&image)
 
@@ -80,7 +80,7 @@ func getImage(imageTag string) (*string, error) {
 		return nil, err
 	}
 
-	return &image, nil
+	return image, nil
 }
 
 // DeleteImage delete row from images

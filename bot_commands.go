@@ -135,6 +135,9 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		if strings.ToLower(segment.Metadata.Name) == legend {
 			msg := tgbotapi.NewPhotoUpload(chatID, nil)
 			image, err := getImage(legend)
+			if err != nil {
+				panic(err)
+			}
 			if err != nil && image != nil {
 				msg.FileID = *image
 			} else {

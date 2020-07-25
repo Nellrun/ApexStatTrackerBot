@@ -43,11 +43,35 @@ func formatStatDiff(oldStat float64, newStat float64) string {
 	return fmt.Sprintf("%.0f (%+.0f)", newStat, diff)
 }
 
+func findLegend(stats []tracker.Segment, legend string) *tracker.Segment {
+	for _, segment := range stats {
+		if segment.Metadata.Name == legend {
+			return &segment
+		}
+	}
+	return nil
+}
+
 func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, legend string) string {
+	if legend == "" {
+		return fmt.Sprintf(
+			"Kills: %s\nDamage: %s\nRank RP: %s",
+			formatStatDiff(oldStats[0].Stats.Kills.Value, newStats[0].Stats.Kills.Value),
+			formatStatDiff(oldStats[0].Stats.Damage.Value, newStats[0].Stats.Damage.Value),
+			formatStatDiff(oldStats[0].Stats.RankScore.Value, newStats[0].Stats.RankScore.Value))
+	}
+
+	oldLegend := findLegend(oldStats, legend)
+	newLegend := findLegend(oldStats, legend)
+
+	if oldLegend == nil || newLegend == nil {
+		return "legend not found"
+	}
+
 	return fmt.Sprintf(
 		"Kills: %s\nDamage: %s\nRank RP: %s",
-		formatStatDiff(oldStats[0].Stats.Kills.Value, newStats[0].Stats.Kills.Value),
-		formatStatDiff(oldStats[0].Stats.Damage.Value, newStats[0].Stats.Damage.Value),
+		formatStatDiff(oldLegend.Stats.Kills.Value, newLegend.Stats.Kills.Value),
+		formatStatDiff(oldLegend.Stats.Damage.Value, newLegend.Stats.Damage.Value),
 		formatStatDiff(oldStats[0].Stats.RankScore.Value, newStats[0].Stats.RankScore.Value))
 }
 

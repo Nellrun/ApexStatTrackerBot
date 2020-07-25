@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	db "github.com/heroku/go-apex-tracker/postgresql-db"
 )
 
 var (
@@ -46,7 +47,7 @@ func webhookHandler(c *gin.Context) {
 				bot.Send(msg)
 				return
 			}
-			err := AddImage(strings.ToLower(command.args[0]), imageURL)
+			err := db.AddImage(strings.ToLower(command.args[0]), imageURL)
 			if err != nil {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "something went wrong")
 				bot.Send(msg)
@@ -91,7 +92,7 @@ func webhookHandler(c *gin.Context) {
 }
 
 func main() {
-	err := CreateTables()
+	err := db.CreateTables()
 	if err != nil {
 		panic(err)
 	}

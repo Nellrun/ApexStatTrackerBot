@@ -7,6 +7,7 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	tracker "github.com/heroku/go-apex-tracker/apex-tracker"
+	db "github.com/heroku/go-apex-tracker/postgresql-db"
 )
 
 // Command bot command structure
@@ -65,7 +66,7 @@ func SubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 
 	username := command.args[0]
-	err := Subscribe(username, chatID)
+	err := db.Subscribe(username, chatID)
 
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
@@ -85,7 +86,7 @@ func UnsubscribeHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 
 	username := command.args[0]
-	err := Unsubscribe(username, chatID)
+	err := db.Unsubscribe(username, chatID)
 
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
@@ -160,7 +161,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	for _, segment := range segments {
 		if strings.ToLower(segment.Metadata.Name) == legend {
 			msg := tgbotapi.NewPhotoUpload(chatID, nil)
-			image, err := getImage(legend)
+			image, err := db.GetImage(legend)
 			if err == nil && image != nil {
 				msg.FileID = *image
 			} else {
@@ -206,7 +207,7 @@ func DeleteImageHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	}
 
 	imageTag := command.args[0]
-	err := DeleteImage(strings.ToLower(imageTag))
+	err := db.DeleteImage(strings.ToLower(imageTag))
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
 		bot.Send(msg)

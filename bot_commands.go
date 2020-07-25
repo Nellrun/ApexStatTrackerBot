@@ -98,6 +98,14 @@ func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	if len(command.args) >= 2 {
 		platform = command.args[1]
 	}
+
+	errMessage := CheckPlatform(platform)
+	if errMessage != nil {
+		msg := tgbotapi.NewMessage(chatID, *errMessage)
+		bot.Send(msg)
+		return
+	}
+
 	segments, err := tracker.GetStats(username, platform)
 	if err != nil || len(segments) == 0 {
 		msg := tgbotapi.NewMessage(chatID, "something went wrong, please try later")
@@ -121,6 +129,13 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	platform := "psn"
 	if len(command.args) >= 3 {
 		platform = command.args[2]
+	}
+
+	errMessage := CheckPlatform(platform)
+	if errMessage != nil {
+		msg := tgbotapi.NewMessage(chatID, *errMessage)
+		bot.Send(msg)
+		return
 	}
 
 	segments, err := tracker.GetStats(username, platform)

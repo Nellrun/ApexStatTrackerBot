@@ -35,12 +35,19 @@ func ParseCommand(message string) Command {
 	return command
 }
 
+func getStat(stat tracker.Stat) string {
+	if stat.DisplayValue == "" {
+		return "unknown"
+	}
+	return stat.DisplayValue
+}
+
 func formatRankedValue(stats tracker.Stats) string {
 	return fmt.Sprintf("%s (%s)", stats.RankScore.DisplayValue, stats.RankScore.Metadata.RankName)
 }
 
 func formatUserInfo(stats tracker.Stats, globalStats tracker.Stats) string {
-	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, formatRankedValue(globalStats))
+	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", getStat(stats.Kills), getStat(stats.Damage), formatRankedValue(globalStats))
 }
 
 // ChatIDHandler handler for command chat_id

@@ -64,14 +64,18 @@ func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, le
 			oldStat := findLegend(oldStats, newStat.Metadata.Name)
 
 			if oldStat == nil {
-				continue
+				text += fmt.Sprintf(
+					"\n\n===%s===\nKills: %s\nDamage: %s",
+					newStat.Metadata.Name,
+					formatStatDiff(0, newStat.Stats.Kills.Value),
+					formatStatDiff(0, newStat.Stats.Damage.Value))
+			} else {
+				text += fmt.Sprintf(
+					"\n\n===%s===\nKills: %s\nDamage: %s",
+					newStat.Metadata.Name,
+					formatStatDiff(oldStat.Stats.Kills.Value, newStat.Stats.Kills.Value),
+					formatStatDiff(oldStat.Stats.Damage.Value, newStat.Stats.Damage.Value))
 			}
-
-			text += fmt.Sprintf(
-				"\n\n===%s===\nKills: %s\nDamage: %s",
-				newStat.Metadata.Name,
-				formatStatDiff(oldStat.Stats.Kills.Value, newStat.Stats.Kills.Value),
-				formatStatDiff(oldStat.Stats.Damage.Value, newStat.Stats.Damage.Value))
 		}
 
 		return text

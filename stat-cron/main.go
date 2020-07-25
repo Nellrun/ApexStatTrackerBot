@@ -17,7 +17,7 @@ func main() {
 	}
 
 	t := time.Now()
-	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()).AddDate(0, 0, -1)
+	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 
 	for _, username := range usernames {
 		stats, err := tracker.GetStats(username, "psn")

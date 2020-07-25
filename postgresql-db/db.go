@@ -133,6 +133,29 @@ func AddLog(username string, stats driver.Value, created time.Time) error {
 	return nil
 }
 
+// GetLog select user stats
+func GetLog(username string, date time.Time) (driver.Value, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	query := `SELECT stats from log WHERE username = $1 and created = $2;`
+
+	row := db.QueryRow(query, username, date)
+
+	stats := new(driver.Value)
+
+	err = row.Scan(&stats)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return stats, nil
+}
+
 // DeleteImage delete row from images
 func DeleteImage(imageTag string) error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))

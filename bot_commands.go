@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	tracker "github.com/heroku/go-apex-tracker/apex-tracker"
@@ -34,6 +36,23 @@ func ParseCommand(message string) Command {
 	}
 
 	return command
+}
+
+func formatStatDiff(oldStat float64, newStat float64) string {
+	diff := newStat - oldStat
+	sign := "+"
+	if diff < 0 {
+		sign = "-"
+	}
+	return fmt.Sprintf("%f (%s%f)", newStat, sign, diff)
+}
+
+func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, legend string) string {
+	return fmt.Sprintf(
+		"Kills: %s\nDamage: %s\nRank RP: %s",
+		formatStatDiff(oldStats[0].Stats.Kills.Value, newStats[0].Stats.Kills.Value),
+		formatStatDiff(oldStats[0].Stats.Damage.Value, newStats[0].Stats.Damage.Value),
+		formatStatDiff(oldStats[0].Stats.RankScore.Value, newStats[0].Stats.RankScore.Value))
 }
 
 func getStat(stat tracker.Stat) string {
@@ -178,6 +197,60 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	bot.Send(msg)
 }
 
+// DailyStatsHandler handler
+func DailyStatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
+	if len(command.args) < 1 {
+		msg := tgbotapi.NewMessage(chatID, "you must provide username as argument")
+		bot.Send(msg)
+		return
+	}
+
+	username := command.args[0]
+	legend := ""
+	if len(command.args) >= 2 {
+		legend = strings.ToLower(command.args[1])
+	}
+
+	t := time.Now()
+	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	yesterday := today.AddDate(0, 0, -1)
+
+	rawStats, err := db.GetLog(username, today)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "today's stats retrieve operation failed")
+		bot.Send(msg)
+		return
+	}
+
+	oldRawStats, err := db.GetLog(username, yesterday)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "yesterday's stats retrieve operation failed")
+		bot.Send(msg)
+		return
+	}
+
+	var todayStats []tracker.Segment
+	var yesterdayStats []tracker.Segment
+
+	err = json.Unmarshal(rawStats.([]byte), &todayStats)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "failed to parse today's stats")
+		bot.Send(msg)
+		return
+	}
+
+	err = json.Unmarshal(oldRawStats.([]byte), &yesterdayStats)
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, "failed to parse yesterday's stats")
+		bot.Send(msg)
+		return
+	}
+
+	text := formatDailyStats(yesterdayStats, todayStats, legend)
+	msg := tgbotapi.NewMessage(chatID, text)
+	bot.Send(msg)
+}
+
 // HelpHandler help command
 func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	helpMessage := `
@@ -185,11 +258,11 @@ func HelpHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	/help - вывести список доступных комманд
 	
 	/rank <username> [<platform>] - вывести статистику игрока: количество киллов, урона и очков рейтинга
-	/stats <username> <class> [<platform>] - вывести стату легенды
+	/stats <username> <legend> [<platform>] - вывести стату легенды
 
 	/subscribe <username> [<platform>] - добавить пользователя в список ежедневных рассылок статистики в данный чат
 	/unsubscribe <username> - удалить игрока из списка ежедневных рассылок статистики 
-
+	/dailystats <username> [<legend>] - получить общую\легендную статистику за сегодня
 
 	Дебаг комманды:
 	/chat_id - получить идентификатор чата

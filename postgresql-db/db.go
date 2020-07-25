@@ -134,10 +134,10 @@ func AddLog(username string, stats driver.Value, created time.Time) error {
 }
 
 // GetLog select user stats
-func GetLog(username string, date time.Time) (driver.Value, error) {
+func GetLog(username string, date time.Time) (string, error) {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer db.Close()
 
@@ -145,12 +145,12 @@ func GetLog(username string, date time.Time) (driver.Value, error) {
 
 	row := db.QueryRow(query, username, date)
 
-	stats := new(driver.Value)
+	var stats string
 
 	err = row.Scan(&stats)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	return stats, nil

@@ -232,14 +232,14 @@ func DailyStatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	var todayStats []tracker.Segment
 	var yesterdayStats []tracker.Segment
 
-	err = json.Unmarshal(rawStats.([]byte), &todayStats)
+	err = json.Unmarshal([]byte(rawStats), &todayStats)
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "failed to parse today's stats")
 		bot.Send(msg)
 		return
 	}
 
-	err = json.Unmarshal(oldRawStats.([]byte), &yesterdayStats)
+	err = json.Unmarshal([]byte(oldRawStats), &yesterdayStats)
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "failed to parse yesterday's stats")
 		bot.Send(msg)

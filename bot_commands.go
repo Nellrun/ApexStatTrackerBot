@@ -62,7 +62,7 @@ func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, le
 	}
 
 	oldLegend := findLegend(oldStats, legend)
-	newLegend := findLegend(oldStats, legend)
+	newLegend := findLegend(newStats, legend)
 
 	if oldLegend == nil || newLegend == nil {
 		return "legend not found"

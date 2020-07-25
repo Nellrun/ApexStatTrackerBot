@@ -42,8 +42,14 @@ type Stats struct {
 
 // Stat describe ranked league score
 type Stat struct {
-	Value        float64 `json:"value"`
-	DisplayValue string  `json:"displayValue"`
+	Value        float64      `json:"value"`
+	DisplayValue string       `json:"displayValue"`
+	Metadata     StatMetadata `json:"metadata"`
+}
+
+// StatMetadata metadata
+type StatMetadata struct {
+	RankName string `json:"rankName"`
 }
 
 // GetStats getting user stats from tracker

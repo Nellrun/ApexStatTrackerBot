@@ -35,8 +35,12 @@ func ParseCommand(message string) Command {
 	return command
 }
 
-func formatUserInfo(stats tracker.Stats) string {
-	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, stats.RankScore.DisplayValue)
+func formatRankedValue(stats tracker.Stats) string {
+	return fmt.Sprintf("%s (%s)", stats.RankScore.DisplayValue, stats.RankScore.Metadata.RankName)
+}
+
+func formatUserInfo(stats tracker.Stats, globalStats tracker.Stats) string {
+	return fmt.Sprintf("Kills: %s\nDamage: %s\nRank RP: %s", stats.Kills.DisplayValue, stats.Damage.DisplayValue, formatRankedValue(globalStats))
 }
 
 // ChatIDHandler handler for command chat_id
@@ -111,7 +115,7 @@ func RankHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("user %s not found for platfrom %s", username, platform))
 		bot.Send(msg)
 	} else {
-		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats))
+		msg := tgbotapi.NewMessage(chatID, formatUserInfo(segments[0].Stats, segments[0].Stats))
 		bot.Send(msg)
 	}
 }
@@ -156,7 +160,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 				msg.FileID = segment.Metadata.TallImageURL
 			}
 			msg.UseExisting = true
-			msg.Caption = formatUserInfo(segment.Stats)
+			msg.Caption = formatUserInfo(segment.Stats, segments[0].Stats)
 			bot.Send(msg)
 			return
 		}

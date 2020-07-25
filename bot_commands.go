@@ -138,7 +138,7 @@ func StatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 			if err != nil {
 				panic(err)
 			}
-			if err != nil && image != nil {
+			if err == nil && image != nil {
 				msg.FileID = *image
 			} else {
 				msg.FileID = segment.Metadata.TallImageURL

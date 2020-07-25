@@ -23,6 +23,11 @@ func messagesHandler() {
 	//Get updates from bot
 	updates, _ := bot.GetUpdatesChan(u)
 	for update := range updates {
+
+		if update.Message == nil {
+			continue
+		}
+
 		if update.Message.Photo != nil {
 			imageURL := (*update.Message.Photo)[0].FileID
 			command := ParseCommand(update.Message.Caption)
@@ -44,7 +49,7 @@ func messagesHandler() {
 			}
 		}
 
-		if update.Message == nil || !strings.HasPrefix(update.Message.Text, "/") {
+		if !strings.HasPrefix(update.Message.Text, "/") {
 			continue
 		}
 

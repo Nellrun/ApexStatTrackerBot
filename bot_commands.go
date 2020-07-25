@@ -68,7 +68,7 @@ func formatDailyStats(oldStats []tracker.Segment, newStats []tracker.Segment, le
 			}
 
 			text += fmt.Sprintf(
-				"\n\n===%s===\nKills: %s\nDamage: %s\n",
+				"\n\n===%s===\nKills: %s\nDamage: %s",
 				newStat.Metadata.Name,
 				formatStatDiff(oldStat.Stats.Kills.Value, newStat.Stats.Kills.Value),
 				formatStatDiff(oldStat.Stats.Damage.Value, newStat.Stats.Damage.Value))

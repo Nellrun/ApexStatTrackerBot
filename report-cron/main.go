@@ -192,7 +192,7 @@ func main() {
 				log.Print("fallback to default image")
 			} else {
 				log.Print("retrieving image from base")
-				imagePath, err := db.GetImage(stats.legends[0].Type)
+				imagePath, err := db.GetImage(strings.ToLower(stats.legends[0].Type))
 				if err != nil {
 					log.Print("fail, fallback do url")
 					*imagePath = stats.legends[0].ImageURL
@@ -205,9 +205,6 @@ func main() {
 			msg.UseExisting = true
 
 			text := formatMessage(username, *stats)
-
-			log.Print(text)
-
 			msg.Caption = text
 			bot.Send(msg)
 		}

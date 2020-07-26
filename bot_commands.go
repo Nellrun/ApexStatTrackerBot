@@ -255,14 +255,14 @@ func DailyStatsHandler(bot *tgbotapi.BotAPI, chatID int64, command Command) {
 	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 	yesterday := today.AddDate(0, 0, -1)
 
-	rawStats, err := db.GetLog(username, today)
+	rawStats, err := db.GetLog(strings.ToLower(username), today)
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "today's stats retrieve operation failed")
 		bot.Send(msg)
 		return
 	}
 
-	oldRawStats, err := db.GetLog(username, yesterday)
+	oldRawStats, err := db.GetLog(strings.ToLower(username), yesterday)
 	if err != nil {
 		msg := tgbotapi.NewMessage(chatID, "yesterday's stats retrieve operation failed")
 		bot.Send(msg)

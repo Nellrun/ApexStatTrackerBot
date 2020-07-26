@@ -9,6 +9,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// Subscribtion represent row from subscriptions
+type Subscribtion struct {
+	Username string
+	Platform string
+	ChatID   int64
+}
+
 // Subscribe add row from subscriptions base
 func Subscribe(username string, chatId int64) error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -84,6 +91,35 @@ func GetImage(imageTag string) (*string, error) {
 	}
 
 	return image, nil
+}
+
+// GetSubscriptionsToSend get users to send statistic
+func GetSubscriptionsToSend() ([]Subscribtion, error) {
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	query := `SELECT username, platform, chat_id from subscriptions LIMIT 30;`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []Subscribtion
+	for rows.Next() {
+		subscription := new(Subscribtion)
+		err := rows.Scan(&subscription.Username, &subscription.Platform, &subscription.ChatID)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, *subscription)
+	}
+
+	return result, nil
 }
 
 // GetSubscriptions func

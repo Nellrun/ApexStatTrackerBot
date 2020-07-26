@@ -133,9 +133,10 @@ func formatStatDiff(stat Stat) string {
 	return fmt.Sprintf("%.0f (%+.0f)", stat.NewStat, stat.Diff)
 }
 
-func formatMessage(stats TotalStat) string {
+func formatMessage(username string, stats TotalStat) string {
 	text := fmt.Sprintf(
-		"<<Total>>\nKills: %s\nDamage: %s\nRP: %s\n",
+		"<<%s>>\nKills: %s\nDamage: %s\nRP: %s\n",
+		username,
 		formatStatDiff(stats.total.Kills),
 		formatStatDiff(stats.total.Damage),
 		formatStatDiff(stats.total.Rank),
@@ -196,7 +197,7 @@ func main() {
 
 			msg.FileID = *imagePath
 			msg.UseExisting = true
-			msg.Caption = formatMessage(*stats)
+			msg.Caption = formatMessage(username, *stats)
 			bot.Send(msg)
 		}
 	}

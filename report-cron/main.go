@@ -179,6 +179,7 @@ func main() {
 		stats := calculateStat(username, startDate, endDate)
 
 		if stats == nil {
+			log.Print("failed to build stats, skipping")
 			continue
 		}
 
@@ -188,12 +189,17 @@ func main() {
 			imagePath := new(string)
 			if len(stats.legends) == 0 {
 				imagePath, _ = db.GetImage("default")
+				log.Print("fallback to default image")
 			} else {
+				log.Print("retrieving image from base")
 				imagePath, err := db.GetImage(stats.legends[0].Type)
 				if err != nil {
+					log.Print("fail, fallback do url")
 					*imagePath = stats.legends[0].ImageURL
 				}
 			}
+
+			log.Printf("image path %s", imagePath)
 
 			msg.FileID = *imagePath
 			msg.UseExisting = true

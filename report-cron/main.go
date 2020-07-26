@@ -199,11 +199,16 @@ func main() {
 				}
 			}
 
-			log.Printf("image path %s", imagePath)
+			log.Printf("image path %s", *imagePath)
 
 			msg.FileID = *imagePath
 			msg.UseExisting = true
-			msg.Caption = formatMessage(username, *stats)
+
+			text := formatMessage(username, *stats)
+
+			log.Print(text)
+
+			msg.Caption = text
 			bot.Send(msg)
 		}
 	}

@@ -193,7 +193,7 @@ func main() {
 			} else {
 				log.Print("retrieving image from base")
 				imagePath, err := db.GetImage(strings.ToLower(stats.legends[0].Type))
-				if err != nil {
+				if err != nil || *imagePath == "" {
 					log.Print("fail, fallback do url")
 					*imagePath = stats.legends[0].ImageURL
 				}

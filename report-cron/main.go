@@ -183,6 +183,11 @@ func main() {
 			continue
 		}
 
+		if len(stats.legends) == 0 {
+			log.Print("user without updates, skipping")
+			continue
+		}
+
 		for _, chatID := range chatIDs {
 			msg := tgbotapi.NewPhotoUpload(chatID, nil)
 

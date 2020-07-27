@@ -197,10 +197,12 @@ func main() {
 				log.Print("fallback to default image")
 			} else {
 				log.Print("retrieving image from base")
-				imagePath, _ = db.GetImage(strings.ToLower(stats.legends[0].Type))
-				if imagePath == nil || *imagePath == "" {
-					log.Print("fail, fallback do url")
+				image, _ := db.GetImage(strings.ToLower(stats.legends[0].Type))
+				if image == nil || *image == "" {
+					log.Print("fail, fallback to url")
 					*imagePath = stats.legends[0].ImageURL
+				} else {
+					imagePath = image
 				}
 			}
 

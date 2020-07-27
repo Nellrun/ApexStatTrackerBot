@@ -144,7 +144,7 @@ func formatMessage(username string, stats TotalStat) string {
 
 	for _, legendStat := range stats.legends {
 		text += fmt.Sprintf(
-			"\n<<%s>>\nKills: %s\nDamage: %s",
+			"\n<<%s>>\nKills: %s\nDamage: %s\n",
 			legendStat.Type,
 			formatStatDiff(legendStat.Kills),
 			formatStatDiff(legendStat.Damage),

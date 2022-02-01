@@ -9,13 +9,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Subscribtion represent row from subscriptions
-type Subscribtion struct {
-	Username string
-	Platform string
-	ChatID   int64
-}
-
 // Subscribe add row from subscriptions base
 func Subscribe(username string, chatId int64) error {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
@@ -123,14 +116,14 @@ func GetSubscriptionsToSend() ([]Subscribtion, error) {
 }
 
 // GetSubscriptions func
-func GetSubscriptions() ([]string, error) {
+func GetSubscriptions() ([]Subscribtion, error) {
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
 
-	query := `SELECT DISTINCT(username) from subscriptions LIMIT 30;`
+	query := `SELECT DISTINCT(username), platform, chat_id from subscriptions LIMIT 30;`
 
 	rows, err := db.Query(query)
 	if err != nil {
@@ -138,14 +131,14 @@ func GetSubscriptions() ([]string, error) {
 	}
 	defer rows.Close()
 
-	var result []string
+	var result []Subscribtion
 	for rows.Next() {
-		username := new(string)
-		err := rows.Scan(&username)
+		subscription := new(Subscribtion)
+		err := rows.Scan(&subscription.Username, &subscription.Platform, &subscription.ChatID)
 		if err != nil {
 			return nil, err
 		}
-		result = append(result, *username)
+		result = append(result, *subscription)
 	}
 
 	return result, nil

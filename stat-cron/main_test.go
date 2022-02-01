@@ -11,14 +11,14 @@ import (
 func TestDb(t *testing.T) {
 	os.Setenv("DATABASE_URL", "TOKEN")
 
-	usernames, err := db.GetSubscriptions()
+	subscriptions, err := db.GetSubscriptions()
 
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	if usernames[0] != "LUV_Nellrun" {
-		t.Error(fmt.Sprintf("got %v, expected %s", usernames, "luv_nellrun"))
+	if subscriptions[0].Username != "LUV_Nellrun" {
+		t.Error(fmt.Sprintf("got %v, expected %s", subscriptions, "luv_nellrun"))
 	}
 }

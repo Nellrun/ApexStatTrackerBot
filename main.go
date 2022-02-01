@@ -84,7 +84,7 @@ func webhookHandler(c *gin.Context) {
 		case "dailystats":
 			DailyStatsHandler(bot, update.Message.Chat.ID, command)
 		default:
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Меня писал очень плохой программист, и он не рассказал мне что значит эта комманда")
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "uknown command")
 			bot.Send(msg)
 		}
 	} else {

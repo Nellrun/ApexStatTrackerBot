@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	usernames, err := db.GetSubscriptions()
+	subscriptions, err := db.GetSubscriptions()
 	if err != nil {
 		log.Print(err)
 		return
@@ -19,8 +19,8 @@ func main() {
 	t := time.Now()
 	today := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 
-	for _, username := range usernames {
-		stats, err := tracker.GetStats(username, "psn")
+	for _, subscription := range subscriptions {
+		stats, err := tracker.GetStats(subscription.Username, subscription.Platform)
 		if err != nil {
 			log.Print(err)
 			continue
@@ -30,7 +30,7 @@ func main() {
 			log.Print(err)
 			continue
 		}
-		err = db.AddLog(username, bytes, today)
+		err = db.AddLog(subscription.Username, bytes, today)
 		if err != nil {
 			log.Print(err)
 			continue
